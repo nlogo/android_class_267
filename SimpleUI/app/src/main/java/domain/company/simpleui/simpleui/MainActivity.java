@@ -12,6 +12,7 @@ import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.SimpleAdapter;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -34,6 +35,8 @@ public class MainActivity extends AppCompatActivity {
     ListView listView ;
     ArrayList<Order> orders = new ArrayList<>();
 
+    Spinner storeSpinner;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,8 +46,10 @@ public class MainActivity extends AppCompatActivity {
         radioGroup = (RadioGroup) findViewById(R.id.radioGroup);
         checkBox = (CheckBox) findViewById(R.id.checkBox);
         listView = (ListView) findViewById(R.id.listView);
+        storeSpinner = (Spinner) findViewById(R.id.spinner);
 
         setupListView();
+        setupSpinner();
 
         editText.setOnKeyListener(new View.OnKeyListener() {
             @Override
@@ -128,6 +133,13 @@ public class MainActivity extends AppCompatActivity {
         textView.setText(drinkName);
         editText.setText("");
         setupListView();
+    }
+
+    public void setupSpinner()
+    {
+        String[] data = getResources().getStringArray(R.array.storeInfo);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, data);
+        storeSpinner.setAdapter(adapter);
     }
 
 //    public void changeTextView()
