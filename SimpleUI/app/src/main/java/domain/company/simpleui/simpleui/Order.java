@@ -6,5 +6,5 @@ package domain.company.simpleui.simpleui;
 public class Order {
     String note;
     String drinkName;
-
+    String storeInfo;
 }
