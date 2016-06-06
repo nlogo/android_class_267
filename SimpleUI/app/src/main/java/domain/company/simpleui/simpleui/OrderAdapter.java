@@ -19,6 +19,7 @@ public class OrderAdapter extends BaseAdapter{
     ArrayList<Order> orders;
     LayoutInflater inflater;
 
+
     public OrderAdapter(Context context, ArrayList<Order> orders)
     {
         this.orders = orders;
@@ -43,18 +44,35 @@ public class OrderAdapter extends BaseAdapter{
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
+        Holder holder;
+
         if(convertView == null)
         {
             convertView = inflater.inflate(R.layout.listview_order_item, null);
-       }
+            TextView drinkNmaeTextView = (TextView) convertView.findViewById(R.id.drinkNameTextView);
+            TextView noteTextView = (TextView) convertView.findViewById(R.id.noteTextView);
+            holder = new Holder();
+            holder.drinkName = drinkNmaeTextView;
+            holder.note = noteTextView;
 
-        TextView drinkNmaeTextView = (TextView) convertView.findViewById(R.id.drinkNameTextView);
-        TextView noteTextView = (TextView) convertView.findViewById(R.id.noteTextView);
+            convertView.setTag(holder);
+       }
+        else
+        {
+            holder = (Holder) convertView.getTag();
+        }
+
+
 
         Order order = orders.get(position);
-        drinkNmaeTextView.setText(order.drinkName);
-        noteTextView.setText(order.note);
+        holder.drinkName.setText(order.drinkName);
+        holder.note.setText(order.note);
 
         return convertView;
+    }
+
+    class Holder{
+        TextView drinkName;
+        TextView note;
     }
 }
