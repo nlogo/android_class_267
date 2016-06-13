@@ -27,9 +27,6 @@ public class MainActivity extends AppCompatActivity {
     EditText editText;
     RadioGroup radioGroup;
     CheckBox checkBox;
-    //String selectedSex = "Male";
-    //String name = "";
-    //String sex = "";
 
     String drinkName = "Black Tea";
     ListView listView ;
@@ -62,56 +59,10 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
-
-        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup radioGroup, int i) {
-                //if(i == R.id.Rmale)
-                //{
-                    //selectedSex = "Male";
-
-                //}else if(i == R.id.Rfemale){
-                    //selectedSex = "Female";
-                //}
-
-                //sex = selectedSex;
-                RadioButton radioButton = (RadioButton) findViewById(i);
-                drinkName = radioButton.getText().toString();
-            }
-        });
-
-//        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-//
-//                changeTextView();
-//            }
-//        });
       }
 
     public void setupListView()
     {
-//        String[] data = new String[]{"123", "456", "789", "Hello", "ListView", "Hi"};
-//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, drinks);
-
-//        List<Map<String, String>> data = new ArrayList<>();
-//
-//        for(int i = 0; i < orders.size(); i++)
-//        {
-//            Order order = orders.get(i);
-//            Map<String, String> item = new HashMap<>();
-//
-//            item.put("note", order.note);
-//            item.put("drinkName", order.drinkName);
-//
-//            data.add(item);
-//        }
-//
-//        String[] from = {"note", "drinkName"};
-//        int[] to = {R.id.noteTextView, R.id.drinkNameTextView};
-//
-//        SimpleAdapter adapter = new SimpleAdapter(this, data, R.layout.listview_order_item, from, to);
-
         OrderAdapter adapter = new OrderAdapter(this, orders);
         listView.setAdapter(adapter);
     }
@@ -120,16 +71,11 @@ public class MainActivity extends AppCompatActivity {
     {
        String note = editText.getText().toString();
 
-        //sex = selectedSex ;
-        //changeTextView();
-
         Order order = new Order();
         order.note = note;
         order.drinkName = drinkName;
         order.storeInfo = (String) storeSpinner.getSelectedItem();
         orders.add(order);
-
-        //drinks.add(drinkName);
 
         textView.setText(drinkName);
         editText.setText("");
@@ -139,20 +85,8 @@ public class MainActivity extends AppCompatActivity {
     public void setupSpinner()
     {
         String[] data = getResources().getStringArray(R.array.storeInfo);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, data);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, data);
         storeSpinner.setAdapter(adapter);
     }
 
-//    public void changeTextView()
-//    {
-//        if ( name.equals(""))
-//            return ;
-//        if(checkBox.isChecked()){
-//            textView.setText(name);
-//        }
-//        else{
-//            String content = name + " sex:" + sex;
-//            textView.setText(content);
-//        }
-//    }
 }
