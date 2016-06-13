@@ -104,35 +104,35 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart()
     {
         super.onStart();
-        Log.d("Deubg","Main Activity OnStart");
+        Log.d("Debug","Main Activity OnStart");
     }
 
     @Override
     protected void onPause()
     {
         super.onPause();
-        Log.d("Deubg","Main Activity OnPause");
+        Log.d("Debug","Main Activity OnPause");
     }
 
     @Override
     protected void onResume()
     {
         super.onResume();
-        Log.d("Deubg","Main Activity OnResume");
+        Log.d("Debug","Main Activity OnResume");
     }
 
     @Override
     protected void onStop()
     {
         super.onStop();
-        Log.d("Deubg","Main Activity OnStop");
+        Log.d("Debug","Main Activity OnStop");
     }
 
     @Override
     protected void onDestroy()
     {
         super.onDestroy();
-        Log.d("Deubg","Main Activity OnDestroy");
+        Log.d("Debug","Main Activity OnDestroy");
     }
 
 }

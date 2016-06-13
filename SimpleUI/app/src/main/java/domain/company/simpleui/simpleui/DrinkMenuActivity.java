@@ -3,49 +3,118 @@ package domain.company.simpleui.simpleui;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ListView;
+import android.widget.TextView;
+
+import java.util.ArrayList;
 
 public class DrinkMenuActivity extends AppCompatActivity {
+
+    ListView drinkListView;
+    TextView priceTextView;
+
+
+    ArrayList<Drink> drinks = new ArrayList<>();
+    ArrayList<Drink> drinkOrders = new ArrayList<>();
+
+    //Set Data
+    String[] names = {"冬瓜紅茶", "玫瑰鹽奶蓋紅茶", "珍珠紅茶拿鐵", "紅茶拿鐵"};
+    int[] mPrices = {25, 35, 45, 35};
+    int[] lPrices = {35, 45, 55, 45};
+    int[] imageId = {R.drawable.drink1, R.drawable.drink2, R.drawable.drink3, R.drawable.drink4};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_drink_menu);
 
-        Log.d("Deubg","Drink Activity OnCreate");
+        setData();
+
+        //get UI Component
+
+        drinkListView = (ListView) findViewById(R.id.drinkListView);
+        priceTextView = (TextView) findViewById(R.id.priceTextView);
+
+        setupListView();
+
+        drinkListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                DrinkAdapter drinkAdapter = (DrinkAdapter)parent.getAdapter();
+                Drink drink = (Drink) drinkAdapter.getItem(position);
+                drinkOrders.add(drink);
+                updateTotalPrice();
+            }
+        });
+
+        Log.d("Debug","Drink Activity OnCreate");
+    }
+
+    private void setData()
+    {
+        for(int i = 0 ; i < names.length; i++)
+        {
+            Drink drink = new Drink();
+            drink.name = names[i];
+            drink.mPrice = mPrices[i];
+            drink.lPrice = lPrices[i];
+            drink.imageId = imageId[i];
+
+            drinks.add(drink);
+        }
+    }
+
+    private void updateTotalPrice()
+    {
+        int total = 0;
+        for(Drink drink: drinkOrders)
+        {
+            total += drink.mPrice;
+        }
+
+        priceTextView.setText(String.valueOf(total));
+    }
+
+    public void setupListView()
+    {
+        DrinkAdapter adapter = new DrinkAdapter(this, drinks);
+        drinkListView.setAdapter(adapter);
     }
 
     @Override
     protected void onStart()
     {
         super.onStart();
-        Log.d("Deubg","Drink Activity OnStart");
+        Log.d("Debug","Drink Activity OnStart");
     }
 
     @Override
     protected void onPause()
     {
         super.onPause();
-        Log.d("Deubg","Drink Activity OnPause");
+        Log.d("Debug","Drink Activity OnPause");
     }
 
     @Override
     protected void onResume()
     {
         super.onResume();
-        Log.d("Deubg","Drink Activity OnResume");
+        Log.d("Debug","Drink Activity OnResume");
     }
 
     @Override
     protected void onStop()
     {
         super.onStop();
-        Log.d("Deubg","Drink Activity OnStop");
+        Log.d("Debug","Drink Activity OnStop");
     }
 
     @Override
     protected void onDestroy()
     {
         super.onDestroy();
-        Log.d("Deubg","Drink Activity OnDestroy");
+        Log.d("Debug","Drink Activity OnDestroy");
     }
 }
