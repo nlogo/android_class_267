@@ -36,9 +36,12 @@ public class MainActivity extends AppCompatActivity {
 
     Spinner storeSpinner;
 
+    static final int REQUEST_CODE_DRINK_MENU_ACTIVITY  = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
         textView = (TextView) findViewById(R.id.textView);
         editText = (EditText) findViewById(R.id.editText);
@@ -97,7 +100,22 @@ public class MainActivity extends AppCompatActivity {
     {
         Intent intent = new Intent();
         intent.setClass(this, DrinkMenuActivity.class);
-        startActivity(intent);
+        startActivityForResult(intent, REQUEST_CODE_DRINK_MENU_ACTIVITY);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == REQUEST_CODE_DRINK_MENU_ACTIVITY)
+        {
+            if(resultCode == RESULT_OK)
+            {
+                textView.setText(data.getStringExtra("results"));
+            }
+        }
+
+
     }
 
     @Override
