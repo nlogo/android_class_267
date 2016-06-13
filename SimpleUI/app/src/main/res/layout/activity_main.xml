@@ -98,4 +98,16 @@
         android:id="@+id/spinner"
         android:layout_alignEnd="@+id/button"
         android:layout_below="@+id/radioGroup" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Menu"
+        android:id="@+id/button2"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@+id/button"
+        android:layout_toEndOf="@+id/button"
+        android:clickable="false"
+        android:onClick="goToMenu"
+        android:layout_below="@+id/checkBox" />
 </RelativeLayout>

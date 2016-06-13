@@ -1,7 +1,9 @@
 package domain.company.simpleui.simpleui;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -59,6 +61,8 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
+
+        Log.d("Debug","Main Activity OnCreate");
       }
 
     public void setupListView()
@@ -87,6 +91,48 @@ public class MainActivity extends AppCompatActivity {
         String[] data = getResources().getStringArray(R.array.storeInfo);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, data);
         storeSpinner.setAdapter(adapter);
+    }
+
+    public void goToMenu(View view)
+    {
+        Intent intent = new Intent();
+        intent.setClass(this, DrinkMenuActivity.class);
+        startActivity(intent);
+    }
+
+    @Override
+    protected void onStart()
+    {
+        super.onStart();
+        Log.d("Deubg","Main Activity OnStart");
+    }
+
+    @Override
+    protected void onPause()
+    {
+        super.onPause();
+        Log.d("Deubg","Main Activity OnPause");
+    }
+
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+        Log.d("Deubg","Main Activity OnResume");
+    }
+
+    @Override
+    protected void onStop()
+    {
+        super.onStop();
+        Log.d("Deubg","Main Activity OnStop");
+    }
+
+    @Override
+    protected void onDestroy()
+    {
+        super.onDestroy();
+        Log.d("Deubg","Main Activity OnDestroy");
     }
 
 }
