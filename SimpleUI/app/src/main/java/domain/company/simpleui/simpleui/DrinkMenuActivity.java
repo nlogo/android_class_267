@@ -1,6 +1,11 @@
 package domain.company.simpleui.simpleui;
 
+
 import android.content.Intent;
+//import android.support.v4.app.FragmentManager;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
+//import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,11 +20,12 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class DrinkMenuActivity extends AppCompatActivity {
+//public class DrinkMenuActivity extends AppCompatActivity implements DrinkOrderDialog.OnFragmentInteractionListener{
+public class DrinkMenuActivity extends AppCompatActivity implements DrinkOrderDialog.OnFragmentInteractionListener{
+
 
     ListView drinkListView;
     TextView priceTextView;
-
 
     ArrayList<Drink> drinks = new ArrayList<>();
     ArrayList<Drink> drinkOrders = new ArrayList<>();
@@ -47,14 +53,37 @@ public class DrinkMenuActivity extends AppCompatActivity {
         drinkListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                DrinkAdapter drinkAdapter = (DrinkAdapter)parent.getAdapter();
-                Drink drink = (Drink) drinkAdapter.getItem(position);
-                drinkOrders.add(drink);
-                updateTotalPrice();
+//                DrinkAdapter drinkAdapter = (DrinkAdapter)parent.getAdapter();
+//                Drink drink = (Drink) drinkAdapter.getItem(position);
+//                drinkOrders.add(drink);
+//                updateTotalPrice();
+
+                Drink drink = (Drink) parent.getAdapter().getItem(position);
+                ShowDetailDrinkMenu(drink);
+
             }
         });
 
         Log.d("Debug","Drink Activity OnCreate");
+    }
+
+    private void  ShowDetailDrinkMenu(Drink drink)
+    {
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction ft = fragmentManager.beginTransaction();
+
+        DrinkOrder drinkOrder = new DrinkOrder();
+        drinkOrder.mPrice = drink.mPrice;
+        drinkOrder.lPrice = drink.lPrice;
+        drinkOrder.drinkName = drink.name;
+        DrinkOrderDialog orderDialog = DrinkOrderDialog.newInstance(drinkOrder);
+
+        orderDialog.show(ft, "DrinkOrderDialog");
+
+//        ft.replace(R.id.root, orderDialog);
+//        ft.addToBackStack(null);
+//        ft.commit();
+
     }
 
     private void setData()
