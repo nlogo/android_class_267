@@ -13,6 +13,7 @@ import android.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.NumberPicker;
 
 
 /**
@@ -94,6 +95,16 @@ public class DrinkOrderDialog extends DialogFragment {
 
                     }
                 });
+
+        NumberPicker numberPicker1 = (NumberPicker)root.findViewById(R.id.numberPicker);
+        NumberPicker numberPicker2 = (NumberPicker)root.findViewById(R.id.numberPicker2);
+
+        numberPicker1.setMaxValue(100);
+        numberPicker1.setMinValue(0);
+        numberPicker1.setValue(drinkOrder.mNumber);
+        numberPicker2.setMaxValue(100);
+        numberPicker2.setMinValue(0);
+        numberPicker2.setValue(drinkOrder.lNumber);
 
 //        return super.onCreateDialog(savedInstanceState);
         return builder.create();
