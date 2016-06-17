@@ -131,6 +131,8 @@ public class DrinkMenuActivity extends AppCompatActivity implements DrinkOrderDi
         intent.putExtra("results", array.toString());
         setResult(RESULT_OK, intent);
 
+        Toast.makeText(this,"新增菜單", Toast.LENGTH_LONG).show();
+
         finish();
     }
 
