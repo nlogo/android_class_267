@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.zip.Inflater;
 
 /**
  * Created by user on 2016/6/13.
@@ -50,7 +49,7 @@ public class DrinkAdapter extends BaseAdapter{
             convertView = inflater.inflate(R.layout.listview_drink_item, null);
             holder = new Holder();
 
-            holder.drinkNameTextView = (TextView) convertView.findViewById(R.id.drinkNameTextView);
+            holder.drinkNameTextView = (TextView) convertView.findViewById(R.id.noteTextView);
             holder.mPricetextView = (TextView) convertView.findViewById(R.id.mPriceTextView);
             holder.lPricetextView = (TextView) convertView.findViewById(R.id.lPriceTextView);
             holder.drinkimageView = (ImageView) convertView.findViewById(R.id.drinkimageView);

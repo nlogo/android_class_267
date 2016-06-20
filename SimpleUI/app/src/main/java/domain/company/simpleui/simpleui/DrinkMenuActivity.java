@@ -85,15 +85,14 @@ public class DrinkMenuActivity extends AppCompatActivity implements DrinkOrderDi
                 flag = true;
                 break;
             }
+       }
 
-            if(!flag)
-            {
+        if(!flag)
+        {
 //                DrinkOrder drinkOrder = new DrinkOrder();
-                drinkOrder.mPrice = drink.mPrice;
-                drinkOrder.lPrice = drink.lPrice;
-                drinkOrder.drinkName = drink.name;
-            }
-
+            drinkOrder.mPrice = drink.mPrice;
+            drinkOrder.lPrice = drink.lPrice;
+            drinkOrder.drinkName = drink.name;
         }
 
         DrinkOrderDialog orderDialog = DrinkOrderDialog.newInstance(drinkOrder);

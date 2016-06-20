@@ -91,6 +91,7 @@ public class DrinkOrderDialog extends DialogFragment {
                 .setPositiveButton("確定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+
                         drinkOrder.lNumber = lNumberPicker.getValue();
                         drinkOrder.mNumber = mNumberPicker.getValue();
                         drinkOrder.ice = getSelectedItemFromRadioGroup(iceRadioGroup);
@@ -110,8 +111,8 @@ public class DrinkOrderDialog extends DialogFragment {
                     }
                 });
 
-        NumberPicker mNumberPicker = (NumberPicker)root.findViewById(R.id.mNumberPicker);
-        NumberPicker lNumberPicker = (NumberPicker)root.findViewById(R.id.lNumberPicker);
+        mNumberPicker = (NumberPicker)root.findViewById(R.id.mNumberPicker);
+        lNumberPicker = (NumberPicker)root.findViewById(R.id.lNumberPicker);
 
         mNumberPicker.setMaxValue(100);
         mNumberPicker.setMinValue(0);
