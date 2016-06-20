@@ -20,15 +20,15 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-//public class DrinkMenuActivity extends AppCompatActivity implements DrinkOrderDialog.OnFragmentInteractionListener{
-public class DrinkMenuActivity extends AppCompatActivity implements DrinkOrderDialog.OnFragmentInteractionListener{
+//public class DrinkMenuActivity extends AppCompatActivity implements DrinkOrderDialog.OnDrinkOrderListener{
+public class DrinkMenuActivity extends AppCompatActivity implements DrinkOrderDialog.OnDrinkOrderListener {
 
 
     ListView drinkListView;
     TextView priceTextView;
 
     ArrayList<Drink> drinks = new ArrayList<>();
-    ArrayList<Drink> drinkOrders = new ArrayList<>();
+    ArrayList<DrinkOrder> drinkOrders = new ArrayList<>();
 
     //Set Data
     String[] names = {"冬瓜紅茶", "玫瑰鹽奶蓋紅茶", "珍珠紅茶拿鐵", "紅茶拿鐵"};
@@ -67,15 +67,35 @@ public class DrinkMenuActivity extends AppCompatActivity implements DrinkOrderDi
         Log.d("Debug","Drink Activity OnCreate");
     }
 
+
+
     private void  ShowDetailDrinkMenu(Drink drink)
     {
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction ft = fragmentManager.beginTransaction();
 
         DrinkOrder drinkOrder = new DrinkOrder();
-        drinkOrder.mPrice = drink.mPrice;
-        drinkOrder.lPrice = drink.lPrice;
-        drinkOrder.drinkName = drink.name;
+        Boolean flag = false;
+
+        for(DrinkOrder order : drinkOrders)
+        {
+            if(order.drinkName.equals(drink.name))
+            {
+                drinkOrder = order;
+                flag = true;
+                break;
+            }
+
+            if(!flag)
+            {
+//                DrinkOrder drinkOrder = new DrinkOrder();
+                drinkOrder.mPrice = drink.mPrice;
+                drinkOrder.lPrice = drink.lPrice;
+                drinkOrder.drinkName = drink.name;
+            }
+
+        }
+
         DrinkOrderDialog orderDialog = DrinkOrderDialog.newInstance(drinkOrder);
 
         orderDialog.show(ft, "DrinkOrderDialog");
@@ -103,9 +123,10 @@ public class DrinkMenuActivity extends AppCompatActivity implements DrinkOrderDi
     private void updateTotalPrice()
     {
         int total = 0;
-        for(Drink drink: drinkOrders)
+        for(DrinkOrder order: drinkOrders)
         {
-            total += drink.mPrice;
+            total += order.mPrice * order.mNumber + order.lPrice * order.lNumber;
+            //total += drink.mPrice;
         }
 
         priceTextView.setText(String.valueOf(total));
@@ -122,9 +143,9 @@ public class DrinkMenuActivity extends AppCompatActivity implements DrinkOrderDi
         Intent intent = new Intent();
         JSONArray array = new JSONArray();
 
-        for(Drink drink : drinkOrders)
+        for(DrinkOrder order : drinkOrders)
         {
-            JSONObject object = drink.getData();
+            JSONObject object = order.getJsonObject();
             array.put(object);
         }
 
@@ -175,5 +196,20 @@ public class DrinkMenuActivity extends AppCompatActivity implements DrinkOrderDi
     {
         super.onDestroy();
         Log.d("Debug","Drink Activity OnDestroy");
+    }
+
+    @Override
+    public void OnDrinkOrderFinished(DrinkOrder drinkOrder) {
+        for(int i = 0; i < drinkOrders.size(); i++)
+        {
+         if(drinkOrders.get(i).drinkName.equals(drinkOrder.drinkName))
+         {
+             drinkOrders.set(i, drinkOrder);
+             updateTotalPrice();
+             return;
+         }
+        }
+        drinkOrders.add(drinkOrder);
+        updateTotalPrice();
     }
 }
