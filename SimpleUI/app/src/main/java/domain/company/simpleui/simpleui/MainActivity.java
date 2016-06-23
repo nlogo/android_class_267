@@ -3,6 +3,8 @@ package domain.company.simpleui.simpleui;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -173,13 +175,36 @@ public class MainActivity extends AppCompatActivity {
 //            }
 //        }
 
-        Order.getQuery().findInBackground(new FindCallback<Order>() {
+        ConnectivityManager cm = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo info = cm.getActiveNetworkInfo();
+
+        final FindCallback<Order> callback = new FindCallback<Order>() {
             @Override
             public void done(List<Order> objects, ParseException e) {
                 orders = objects;
                 setupListView();
             }
-        });
+        };
+
+        if(info != null && info.isConnected()){
+            Order.getOrdersFromRemote(new FindCallback<Order>() {
+                @Override
+                public void done(List<Order> objects, ParseException e) {
+                    if(e!=null)
+                    {
+                        Toast.makeText(MainActivity.this, "Sync Failed", Toast.LENGTH_LONG).show();
+                        Order.getQuery().fromLocalDatastore().findInBackground(callback);
+                    }
+                    else
+                    {
+                        callback.done(objects, e);
+                    }
+
+                }
+            });
+        }else{
+            Order.getQuery().fromLocalDatastore().findInBackground(callback);
+        }
     }
 
     public void click(View view)
@@ -190,8 +215,9 @@ public class MainActivity extends AppCompatActivity {
         order.setNote(note);
         order.setMenuResults(menuResults);
         order.setStoreInfo((String) storeSpinner.getSelectedItem());
-        orders.add(order);
+        order.pinInBackground();
         order.saveEventually();
+        orders.add(order);
 
         Utils.writeFile(this, "history", order.getJsonObject().toString());
 
