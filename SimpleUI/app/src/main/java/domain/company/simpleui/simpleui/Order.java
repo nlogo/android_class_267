@@ -2,6 +2,7 @@ package domain.company.simpleui.simpleui;
 
 import com.parse.ParseClassName;
 import com.parse.ParseObject;
+import com.parse.ParseQuery;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -20,11 +21,21 @@ public class Order extends ParseObject{
     public String getNote(){return getString("note");}
     public void setNote(String note){put("note", note);}
 
-    public String getMenuResults(){return getString("menuResults");}
+    public String getMenuResults()
+    {
+        String menuResults = getString("menuResults");
+        if(menuResults == null)
+        {
+            menuResults = "";
+        }
+        return menuResults;
+    }
     public void setMenuResults(String note){put("menuResults", note);}
 
     public String getStoreInfo(){return getString("storeInfo");}
     public void setStoreInfo(String note){put("storeInfo", note);}
+
+    public static ParseQuery<Order> getQuery(){return ParseQuery.getQuery(Order.class);}
 
     public JSONObject getJsonObject()
     {

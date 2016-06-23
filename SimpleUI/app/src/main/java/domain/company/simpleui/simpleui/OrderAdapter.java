@@ -12,17 +12,18 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by user on 2016/6/6.
  */
 public class OrderAdapter extends BaseAdapter{
 
-    ArrayList<Order> orders;
+    List<Order> orders;
     LayoutInflater inflater;
 
 
-    public OrderAdapter(Context context, ArrayList<Order> orders)
+    public OrderAdapter(Context context, List<Order> orders)
     {
         this.orders = orders;
         this.inflater = LayoutInflater.from(context);

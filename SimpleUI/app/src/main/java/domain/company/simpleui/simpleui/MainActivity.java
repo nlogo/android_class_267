@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
     String menuResults = "";
 
     ListView listView ;
-    ArrayList<Order> orders = new ArrayList<>();
+    List<Order> orders = new ArrayList<>();
 
     Spinner storeSpinner;
 
@@ -161,17 +161,25 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupOrdersData()
     {
-        String content = Utils.readFile(this, "history");
-        String[] datas = content.split("\n");
+//        String content = Utils.readFile(this, "history");
+//        String[] datas = content.split("\n");
+//
+//        for(int i = 0 ; i < datas.length; i++)
+//        {
+//            Order order = Order.newInstanceWithData(datas[i]);
+//            if(order != null)
+//            {
+//                orders.add(order);
+//            }
+//        }
 
-        for(int i = 0 ; i < datas.length; i++)
-        {
-            Order order = Order.newInstanceWithData(datas[i]);
-            if(order != null)
-            {
-                orders.add(order);
+        Order.getQuery().findInBackground(new FindCallback<Order>() {
+            @Override
+            public void done(List<Order> objects, ParseException e) {
+                orders = objects;
+                setupListView();
             }
-        }
+        });
     }
 
     public void click(View view)
