@@ -26,6 +26,11 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -57,6 +62,21 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        ParseObject testObject = new ParseObject("TestObject");
+        testObject.put("foo", "bar");
+        testObject.saveInBackground();
+
+        ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("TestObject");
+        query.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> objects, ParseException e) {
+                if(e == null)
+                    for (ParseObject p : objects)
+                    {
+                        Toast.makeText(MainActivity.this, p.getString("foo"), Toast.LENGTH_LONG).show();
+                    }
+            }
+        });
 
 //        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 //        requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -159,10 +179,11 @@ public class MainActivity extends AppCompatActivity {
        String note = editText.getText().toString();
 
         Order order = new Order();
-        order.note = note;
-        order.menuResults = menuResults;
-        order.storeInfo = (String) storeSpinner.getSelectedItem();
+        order.setNote(note);
+        order.setMenuResults(menuResults);
+        order.setStoreInfo((String) storeSpinner.getSelectedItem());
         orders.add(order);
+        order.saveEventually();
 
         Utils.writeFile(this, "history", order.getJsonObject().toString());
 

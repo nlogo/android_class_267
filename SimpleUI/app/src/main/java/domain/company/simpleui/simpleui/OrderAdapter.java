@@ -68,7 +68,7 @@ public class OrderAdapter extends BaseAdapter{
         Order order = orders.get(position);
         int totalNumber = 0 ;
         try {
-            JSONArray jsonArray = new JSONArray(order.menuResults);
+            JSONArray jsonArray = new JSONArray(order.getMenuResults());
             for(int i =0; i < jsonArray.length(); i++)
             {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
@@ -80,8 +80,8 @@ public class OrderAdapter extends BaseAdapter{
         }
 
         holder.drinkNumber.setText(String.valueOf(totalNumber));
-        holder.note.setText(order.note);
-        holder.storeInfo.setText(order.storeInfo);
+        holder.note.setText(order.getNote());
+        holder.storeInfo.setText(order.getStoreInfo());
 
         return convertView;
     }
