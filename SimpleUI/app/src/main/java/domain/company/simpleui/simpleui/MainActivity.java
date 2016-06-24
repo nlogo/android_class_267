@@ -119,8 +119,6 @@ public class MainActivity extends AppCompatActivity {
                 textView.setText(data.getStringExtra("results"));
             }
         }
-
-
     }
 
     @Override
