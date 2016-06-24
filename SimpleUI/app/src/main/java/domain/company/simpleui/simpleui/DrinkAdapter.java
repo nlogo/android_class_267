@@ -8,9 +8,10 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.zip.Inflater;
 
 /**
  * Created by user on 2016/6/13.
@@ -20,7 +21,7 @@ public class DrinkAdapter extends BaseAdapter{
     LayoutInflater inflater;
     List<Drink> drinks;
 
-    public DrinkAdapter(Context context, ArrayList<Drink> drinks)
+    public DrinkAdapter(Context context, List<Drink> drinks)
     {
         this.inflater = LayoutInflater.from(context);
         this.drinks = drinks;
@@ -50,7 +51,7 @@ public class DrinkAdapter extends BaseAdapter{
             convertView = inflater.inflate(R.layout.listview_drink_item, null);
             holder = new Holder();
 
-            holder.drinkNameTextView = (TextView) convertView.findViewById(R.id.drinkNameTextView);
+            holder.drinkNameTextView = (TextView) convertView.findViewById(R.id.noteTextView);
             holder.mPricetextView = (TextView) convertView.findViewById(R.id.mPriceTextView);
             holder.lPricetextView = (TextView) convertView.findViewById(R.id.lPriceTextView);
             holder.drinkimageView = (ImageView) convertView.findViewById(R.id.drinkimageView);
@@ -64,10 +65,11 @@ public class DrinkAdapter extends BaseAdapter{
 
         Drink drink = drinks.get(position);
 
-        holder.drinkNameTextView.setText(drink.name);
-        holder.mPricetextView.setText(String.valueOf(drink.mPrice));
-        holder.lPricetextView.setText(String.valueOf(drink.lPrice));
-        holder.drinkimageView.setImageResource(drink.imageId);
+        holder.drinkNameTextView.setText(drink.getName());
+        holder.mPricetextView.setText(String.valueOf(drink.getmPrice()));
+        holder.lPricetextView.setText(String.valueOf(drink.getlPrice()));
+       // holder.drinkimageView.setImageResource(drink.imageId);
+        Picasso.with(inflater.getContext()).load(drink.getImage().getUrl()).into(holder.drinkimageView);
 
         return convertView;
     }

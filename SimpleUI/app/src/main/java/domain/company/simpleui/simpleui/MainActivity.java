@@ -1,13 +1,21 @@
 package domain.company.simpleui.simpleui;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -18,7 +26,14 @@ import android.widget.RadioGroup;
 import android.widget.SimpleAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -33,19 +48,40 @@ public class MainActivity extends AppCompatActivity {
     CheckBox checkBox;
 
     String drinkName = "Black Tea";
+    String menuResults = "";
+
     ListView listView ;
-    ArrayList<Order> orders = new ArrayList<>();
+    List<Order> orders = new ArrayList<>();
 
     Spinner storeSpinner;
 
     static final int REQUEST_CODE_DRINK_MENU_ACTIVITY  = 0;
 
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        ParseObject testObject = new ParseObject("TestObject");
+        testObject.put("foo", "bar");
+        testObject.saveInBackground();
+
+        ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("TestObject");
+        query.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> objects, ParseException e) {
+                if(e == null)
+                    for (ParseObject p : objects)
+                    {
+                        Toast.makeText(MainActivity.this, p.getString("foo"), Toast.LENGTH_LONG).show();
+                    }
+            }
+        });
+
+//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+//        requestWindowFeature(Window.FEATURE_NO_TITLE);
 
         setContentView(R.layout.activity_main);
         textView = (TextView) findViewById(R.id.textView);
@@ -55,18 +91,64 @@ public class MainActivity extends AppCompatActivity {
         listView = (ListView) findViewById(R.id.listView);
         storeSpinner = (Spinner) findViewById(R.id.spinner);
 
+        sharedPreferences = getSharedPreferences("setting", Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+
+        setupOrdersData();
         setupListView();
         setupSpinner();
+        storeSpinner.setSelection(sharedPreferences.getInt("storeSpinner", 1));
+
+        editText.setText(sharedPreferences.getString("editText", ""));
 
         editText.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View view, int i, KeyEvent keyEvent) {
+
+                String text = editText.getText().toString();
+                editor.putString("editText", text);
+                editor.apply();
+
                 if(i == KeyEvent.KEYCODE_ENTER && keyEvent.getAction() == KeyEvent.ACTION_DOWN)
                 {
                     click(view);
                     return true;
                 }
                 return false;
+            }
+        });
+
+        textView.setText(sharedPreferences.getString("textView", ""));
+
+        textView.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                editor.putString("textView", s.toString());
+                editor.apply();
+            }
+        });
+
+
+        storeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                editor.putInt("storeSpinner", position);
+                editor.apply();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
             }
         });
 
@@ -79,17 +161,68 @@ public class MainActivity extends AppCompatActivity {
         listView.setAdapter(adapter);
     }
 
+    private void setupOrdersData()
+    {
+//        String content = Utils.readFile(this, "history");
+//        String[] datas = content.split("\n");
+//
+//        for(int i = 0 ; i < datas.length; i++)
+//        {
+//            Order order = Order.newInstanceWithData(datas[i]);
+//            if(order != null)
+//            {
+//                orders.add(order);
+//            }
+//        }
+
+        ConnectivityManager cm = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo info = cm.getActiveNetworkInfo();
+
+        final FindCallback<Order> callback = new FindCallback<Order>() {
+            @Override
+            public void done(List<Order> objects, ParseException e) {
+                orders = objects;
+                setupListView();
+            }
+        };
+
+        if(info != null && info.isConnected()){
+            Order.getOrdersFromRemote(new FindCallback<Order>() {
+                @Override
+                public void done(List<Order> objects, ParseException e) {
+                    if(e!=null)
+                    {
+                        Toast.makeText(MainActivity.this, "Sync Failed", Toast.LENGTH_LONG).show();
+                        Order.getQuery().fromLocalDatastore().findInBackground(callback);
+                    }
+                    else
+                    {
+                        callback.done(objects, e);
+                    }
+
+                }
+            });
+        }else{
+            Order.getQuery().fromLocalDatastore().findInBackground(callback);
+        }
+    }
+
     public void click(View view)
     {
        String note = editText.getText().toString();
 
         Order order = new Order();
-        order.note = note;
-        order.drinkName = drinkName;
-        order.storeInfo = (String) storeSpinner.getSelectedItem();
+        order.setNote(note);
+        order.setMenuResults(menuResults);
+        order.setStoreInfo((String) storeSpinner.getSelectedItem());
+        order.pinInBackground();
+        order.saveEventually();
         orders.add(order);
 
-        textView.setText(drinkName);
+        Utils.writeFile(this, "history", order.getJsonObject().toString());
+
+        textView.setText(note);
+        menuResults = "";
         editText.setText("");
         setupListView();
     }
@@ -116,7 +249,9 @@ public class MainActivity extends AppCompatActivity {
         {
             if(resultCode == RESULT_OK)
             {
-                textView.setText(data.getStringExtra("results"));
+                menuResults = data.getStringExtra("results");
+                //Toast.makeText(this, "完成菜單", Toast.LENGTH_LONG).show();
+                //textView.setText(data.getStringExtra("results"));
             }
         }
     }
