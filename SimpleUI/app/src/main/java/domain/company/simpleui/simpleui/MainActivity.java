@@ -152,8 +152,28 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Order order = (Order) parent.getAdapter().getItem(position);
+                goToDetailOrder(order);
+            }
+        });
+
         Log.d("Debug","Main Activity OnCreate");
       }
+
+    private void goToDetailOrder(Order order)
+    {
+        Intent intent = new Intent();
+        intent.setClass(this, OrderDetailActivity.class);
+
+        intent.putExtra("note", order.getNote());
+        intent.putExtra("menuResults", order.getMenuResults());
+        intent.putExtra("storeInfo", order.getStoreInfo());
+
+        startActivity(intent);
+    }
 
     public void setupListView()
     {
