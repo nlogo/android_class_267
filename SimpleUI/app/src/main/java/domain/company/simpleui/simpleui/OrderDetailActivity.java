@@ -63,28 +63,26 @@ public class OrderDetailActivity extends AppCompatActivity {
         }
     }
 
-        private static class GeoCodingTask extends AsyncTask<String, Void, Bitmap>{
-
-            @Override
-            protected Bitmap doInBackground(String... params) {
-                String address = params[0];
-                double[] latlng = Utils.getLatLngFromGoogleMapAPI(address);
-                if(latlng != null)
-                    Log.d("Deubg", String.valueOf(latlng[0]));
-                    Log.d("Deubg", String.valueOf(latlng[1]));
-
-
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Bitmap bitmap) {
-                super.onPostExecute(bitmap);
-
-            }
-
-        }
-
-
+//        private static class GeoCodingTask extends AsyncTask<String, Void, Bitmap>{
+//
+//            @Override
+//            protected Bitmap doInBackground(String... params) {
+//                String address = params[0];
+//                double[] latlng = Utils.getLatLngFromGoogleMapAPI(address);
+//                if(latlng != null)
+//                    Log.d("Deubg", String.valueOf(latlng[0]));
+//                    Log.d("Deubg", String.valueOf(latlng[1]));
+//
+//
+//                return null;
+//            }
+//
+//            @Override
+//            protected void onPostExecute(Bitmap bitmap) {
+//                super.onPostExecute(bitmap);
+//
+//            }
+//
+//        }
 
 }
