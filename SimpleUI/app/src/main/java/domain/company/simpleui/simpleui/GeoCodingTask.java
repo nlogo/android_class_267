@@ -42,6 +42,9 @@ public class GeoCodingTask extends AsyncTask<String, Void, double[]>{
     interface GeoCodingTaskResponse{
         void reponseWithGeoCodingResults(LatLng latLng);
     }
+
+    public interface GeoCodinTaskResponse {
+    }
 }
 
 
