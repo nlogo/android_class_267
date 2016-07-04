@@ -28,10 +28,22 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -56,17 +68,20 @@ public class MainActivity extends AppCompatActivity {
     Spinner storeSpinner;
 
     static final int REQUEST_CODE_DRINK_MENU_ACTIVITY  = 0;
+    static final int REQUEST_CODE_LOGIN_ACTIVITY = 0;
 
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
+
+    CallbackManager callbackManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        ParseObject testObject = new ParseObject("TestObject");
-        testObject.put("foo", "bar");
-        testObject.saveInBackground();
+//        ParseObject testObject = new ParseObject("TestObject");
+//        testObject.put("foo", "bar");
+//        testObject.saveInBackground();
 
         ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("TestObject");
         query.findInBackground(new FindCallback<ParseObject>() {
@@ -97,6 +112,15 @@ public class MainActivity extends AppCompatActivity {
         setupOrdersData();
         setupListView();
         setupSpinner();
+//        setupFaceBook();
+
+        if(ParseUser.getCurrentUser() == null)
+        {
+            Intent intent = new Intent();
+            intent.setClass(this, LoginActivity.class);
+            startActivityForResult(intent, REQUEST_CODE_LOGIN_ACTIVITY);
+        }
+
         storeSpinner.setSelection(sharedPreferences.getInt("storeSpinner", 1));
 
         editText.setText(sharedPreferences.getString("editText", ""));
@@ -162,6 +186,63 @@ public class MainActivity extends AppCompatActivity {
 
         Log.d("Debug","Main Activity OnCreate");
       }
+
+    private void setupFaceBook()
+    {
+        callbackManager = CallbackManager.Factory.create();
+
+        LoginButton loginButton = (LoginButton)findViewById(R.id.loginButton);
+
+        loginButton.setReadPermissions("email", "public_profile");
+
+        loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                AccessToken accessToken = loginResult.getAccessToken();
+                GraphRequest request = GraphRequest.newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback() {
+                    @Override
+                    public void onCompleted(JSONObject object, GraphResponse response) {
+                        Log.d("Debug", object.toString());
+                        try {
+                            textView.setText(object.getString("name"));
+
+                            if(object.has("email"))
+                            {
+
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+                Bundle bundle = new Bundle();
+                bundle.putString("fields", "email, id, name");
+                request.setParameters(bundle);
+                request.executeAsync();
+
+            }
+
+            @Override
+            public void onCancel() {
+
+            }
+
+            @Override
+            public void onError(FacebookException error) {
+
+            }
+        });
+
+        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+        if(accessToken != null)
+        {
+
+        }
+    }
+
+
+
 
     private void goToDetailOrder(Order order)
     {
@@ -264,6 +345,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        callbackManager.onActivityResult(requestCode, resultCode, data);
 
         if(requestCode == REQUEST_CODE_DRINK_MENU_ACTIVITY)
         {
